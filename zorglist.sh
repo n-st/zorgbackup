@@ -51,6 +51,7 @@ zfs get -H -o name -t filesystem $options de.voidptr.zorgbackup:repo "$argument"
 
             export BORG_REPO BORG_PASSPHRASE
             lastdate=$(borg info --last 1 --json | awk '$1=="\"name\":" {name=$2;gsub(/",?/, "", name);print name}')
+            lastdate="${lastdate:--}"
 
             printf '%s\t%s\t%s\t%s\t%s\n' "$filesystem" "$repo" "$target" "$borg_options" "$lastdate"
         done
