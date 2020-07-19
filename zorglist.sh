@@ -10,10 +10,26 @@ then
     exit 1
 fi
 
+options=""
+argument=""
+while :; do
+    if [ $# -eq 0 ]
+    then
+        break
+    elif [ $# -eq 1 ]
+    then
+        argument="$1"
+    else
+        options="$options $1"
+    fi
+
+    shift
+done
+
 # Load passphrase file
 BORG_PASSPHRASE="$(cat "$pwdfile")"
 
-zfs get -H -o name -t filesystem de.voidptr.zorgbackup:repo | \
+zfs get -H -o name -t filesystem $options de.voidptr.zorgbackup:repo "$argument" | \
     while read -r filesystem
     do
         repo=$(zfs get -H -o value -t filesystem de.voidptr.zorgbackup:repo "$filesystem")
