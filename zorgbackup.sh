@@ -9,23 +9,23 @@ default_options="\
 --lock-wait $((3 * 3600)) \
 --checkpoint-interval $((15 * 60)) \
 --exclude-caches \
---exclude-if-present '.nobackup' \
+--exclude-if-present .nobackup \
 --keep-exclude-tags \
---exclude '*/.Cache/' \
---exclude '*/.cache/' \
---exclude '*/.gvfs/' \
---exclude '*/.Trash*/' \
---exclude '*/Trash/' \
---exclude '/dev/' \
---exclude '/proc/' \
---exclude '/sys/' \
---exclude '/tmp/' \
---exclude '*/usr/ports/' \
---exclude '*/usr/src/' \
---exclude '*/var/cache/' \
---exclude '*/var/crash/' \
---exclude '*/var/db/portsnap/files/' \
---exclude '*/var/tmp/' \
+--exclude=*/.Cache/ \
+--exclude=*/.cache/ \
+--exclude=*/.gvfs/ \
+--exclude=*/.Trash*/ \
+--exclude=*/Trash/ \
+--exclude=/dev/ \
+--exclude=/proc/ \
+--exclude=/sys/ \
+--exclude=/tmp/ \
+--exclude=*/usr/ports/ \
+--exclude=*/usr/src/ \
+--exclude=*/var/cache/ \
+--exclude=*/var/crash/ \
+--exclude=*/var/db/portsnap/files/ \
+--exclude=*/var/tmp/ \
 "
 ## / Static configuration
 
