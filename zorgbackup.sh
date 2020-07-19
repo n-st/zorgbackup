@@ -30,6 +30,7 @@ default_options="\
 
 # Parse arguments
 verbose=0
+dryrun=0
 while :; do
     if [ $# -eq 0 ]
     then
@@ -42,6 +43,9 @@ while :; do
             ;;
         -v|--verbose)
             verbose=$((verbose + 1)) # Each -v argument adds 1 to verbosity.
+            ;;
+        -n|--dry-run)
+            dryrun=1
             ;;
         --)              # End of all options.
             shift
@@ -113,6 +117,10 @@ zfs get -H -o name -t filesystem -s local de.voidptr.zorgbackup:repo | \
             if [ $verbose -ge 3 ]
             then
                 borg_options="$borg_options --progress --stats"
+            fi
+            if [ $dryrun -ge 1 ]
+            then
+                borg_options="$borg_options --dry-run"
             fi
 
             if [ $verbose -ge 1 ]
