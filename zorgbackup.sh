@@ -76,13 +76,6 @@ zfs get -H -o name -t filesystem -s local de.voidptr.zorgbackup:repo | \
     do
         mountpoint=$(zfs get -H -o value -t filesystem mountpoint "$filesystem")
 
-        target=$(zfs get -H -o value -t filesystem de.voidptr.zorgbackup:target "$filesystem")
-        if [ "$target" = "-" ]
-        then
-            printf 'No target destination specified. Skipping filesystem "%s".\n' "$filesystem" 1>&2
-            continue
-        fi
-
         repo=$(zfs get -H -o value -t filesystem de.voidptr.zorgbackup:repo "$filesystem")
         if [ "$repo" = "-" ]
         then
@@ -90,49 +83,59 @@ zfs get -H -o name -t filesystem -s local de.voidptr.zorgbackup:repo | \
             continue
         fi
 
-        BORG_REPO="${target}${repo}"
+        targets=$(zfs get -H -o value -t filesystem de.voidptr.zorgbackup:target "$filesystem" | tr ',' ' ')
+        for target in $targets
+        do
+            if [ "$target" = "-" ]
+            then
+                printf 'No target destination specified. Skipping filesystem "%s".\n' "$filesystem" 1>&2
+                continue
+            fi
 
-        borg_options=$(zfs get -H -o value -t filesystem de.voidptr.zorgbackup:options "$filesystem")
-        case "$borg_options" in
-            -)
-                borg_options="$default_options"
-                ;;
-            --\ *)
-                borg_options="${borg_options#-- }"
-                ;;
-            *)
-                borg_options="$default_options $borg_options"
-                ;;
-        esac
-        if [ $verbose -ge 2 ]
-        then
-            borg_options="$borg_options --verbose"
-        fi
-        if [ $verbose -ge 3 ]
-        then
-            borg_options="$borg_options --progress --stats"
-        fi
+            BORG_REPO="${target}${repo}"
 
-        if [ $verbose -ge 1 ]
-        then
-            printf 'Backing up "%s" (at "%s") to "%s"...\n' "$filesystem" "$mountpoint" "$BORG_REPO"
-        fi
+            borg_options=$(zfs get -H -o value -t filesystem de.voidptr.zorgbackup:options "$filesystem")
+            case "$borg_options" in
+                -)
+                    borg_options="$default_options"
+                    ;;
+                --\ *)
+                    borg_options="${borg_options#-- }"
+                    ;;
+                *)
+                    borg_options="$default_options $borg_options"
+                    ;;
+            esac
+            if [ $verbose -ge 2 ]
+            then
+                borg_options="$borg_options --verbose"
+            fi
+            if [ $verbose -ge 3 ]
+            then
+                borg_options="$borg_options --progress --stats"
+            fi
 
-        if ! cd "$mountpoint"
-        then
-            printf 'Could not chdir to "%s". Skipping filesystem "%s".\n' "$mountpoint" "$filesystem" 1>&2
-            continue
-        fi
+            if [ $verbose -ge 1 ]
+            then
+                printf 'Backing up "%s" (at "%s") to "%s"...\n' "$filesystem" "$mountpoint" "$BORG_REPO"
+            fi
 
-        export BORG_REPO BORG_PASSPHRASE
-        # A bit of trickery to handle the return code despite `set -e`
-        rc=0
-        borg create $borg_options "::$archive_name" '.' || rc=$?
-        if [ $rc -ne 0 ]
-        then
-            printf 'Borg reported failure (exit code %d).\n' "$rc" 1>&2
-        elif [ $verbose -ge 1 ]
-        then
-            printf 'Borg invocation returned %d.\n' "$rc"
-        fi
+            if ! cd "$mountpoint"
+            then
+                printf 'Could not chdir to "%s". Skipping filesystem "%s".\n' "$mountpoint" "$filesystem" 1>&2
+                continue
+            fi
+
+            export BORG_REPO BORG_PASSPHRASE
+            # A bit of trickery to handle the return code despite `set -e`
+            rc=0
+            borg create $borg_options "::$archive_name" '.' || rc=$?
+            if [ $rc -ne 0 ]
+            then
+                printf 'Borg reported failure (exit code %d).\n' "$rc" 1>&2
+            elif [ $verbose -ge 1 ]
+            then
+                printf 'Borg invocation returned %d.\n' "$rc"
+            fi
+        done
     done
