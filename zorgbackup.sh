@@ -11,20 +11,21 @@ default_options="\
 --exclude-caches \
 --exclude-if-present '.nobackup' \
 --keep-exclude-tags \
---exclude '*/.[Cc]ache/' \
+--exclude '*/.Cache/' \
+--exclude '*/.cache/' \
 --exclude '*/.gvfs/' \
 --exclude '*/.Trash*/' \
 --exclude '*/Trash/' \
---exclude '*/[Cc]ache/' \
 --exclude '/dev/' \
 --exclude '/proc/' \
 --exclude '/sys/' \
 --exclude '/tmp/' \
---exclude '/usr/ports/' \
---exclude '/usr/src/' \
---exclude '/var/cache/' \
---exclude '/var/crash/' \
---exclude '/var/tmp/' \
+--exclude '*/usr/ports/' \
+--exclude '*/usr/src/' \
+--exclude '*/var/cache/' \
+--exclude '*/var/crash/' \
+--exclude '*/var/db/portsnap/files/' \
+--exclude '*/var/tmp/' \
 "
 ## / Static configuration
 
