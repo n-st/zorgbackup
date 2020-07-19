@@ -29,6 +29,7 @@ done
 # Load passphrase file
 BORG_PASSPHRASE="$(cat "$pwdfile")"
 
+printf '%s\t%s\t%s\t%s\t%s\n' "NAME" "REPO" "TARGET" "OPTIONS" "LAST_ARCHIVE"
 zfs get -H -o name -t filesystem $options de.voidptr.zorgbackup:repo "$argument" | \
     while read -r filesystem
     do
