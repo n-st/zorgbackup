@@ -15,7 +15,6 @@ default_options="\
 --exclude=*/.cache/ \
 --exclude=*/.gvfs/ \
 --exclude=*/.Trash*/ \
---exclude=*/Trash/ \
 --exclude=/dev/ \
 --exclude=/proc/ \
 --exclude=/sys/ \
