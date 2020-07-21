@@ -117,7 +117,13 @@ zfs get -H -o name -t filesystem -s local de.voidptr.zorgbackup:repo | \
             fi
             if [ $verbose -ge 3 ]
             then
-                borg_options="$borg_options --progress --stats"
+                borg_options="$borg_options --progress"
+                if [ $dryrun -ge 1 ]
+                then
+                    borg_options="$borg_options --list"
+                else
+                    borg_options="$borg_options --stats"
+                fi
             fi
             if [ $dryrun -ge 1 ]
             then
