@@ -72,6 +72,11 @@ fi
 # Load passphrase file
 BORG_PASSPHRASE="$(cat "$pwdfile")"
 
+if [ $verbose -ge 1 ]
+then
+    printf 'Backup started at %s.\n' "$(date '+%F %T %Z')"
+fi
+
 # Iterate over all filesystems that have a destination repo set *explicitly*
 # (not inherited, since that would back up all child filesystems into the same
 # borg repo)
@@ -153,3 +158,8 @@ zfs get -H -o name -t filesystem -s local de.voidptr.zorgbackup:repo | \
             fi
         done
     done
+
+if [ $verbose -ge 1 ]
+then
+    printf 'Backup finished at %s.\n' "$(date '+%F %T %Z')"
+fi
