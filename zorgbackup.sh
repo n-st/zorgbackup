@@ -11,14 +11,16 @@ default_options="\
 --exclude-caches \
 --exclude-if-present .nobackup \
 --keep-exclude-tags \
---exclude=*/.Cache/ \
---exclude=*/.cache/ \
+--exclude=*/.[Cc]ache/ \
+--exclude=*/[Cc]ache/ \
 --exclude=*/.gvfs/ \
 --exclude=*/.Trash*/ \
 --exclude=/dev/ \
 --exclude=/proc/ \
 --exclude=/sys/ \
 --exclude=/tmp/ \
+--exclude=*/[Tt]emp/ \
+--exclude=*/[Tt]mp/ \
 --exclude=*/usr/ports/ \
 --exclude=*/usr/src/ \
 --exclude=*/var/cache/ \
