@@ -3,7 +3,7 @@
 set -eu
 
 ## Static configuration
-archive_name='zorgbackup_{utcnow:%Y-%m-%d_%H:%M:%S}'
+default_archive_name='zorgbackup_{utcnow:%Y-%m-%d_%H:%M:%S}'
 default_options="\
 --warning \
 --lock-wait $((3 * 3600)) \
@@ -91,6 +91,16 @@ zfs get -H -o name -t filesystem -s local de.voidptr.zorgbackup:repo | \
             printf 'No repo destination specified. Skipping filesystem "%s".\n' "$filesystem" 1>&2
             continue
         fi
+
+        archive=$(zfs get -H -o value -t filesystem de.voidptr.zorgbackup:archive "$filesystem")
+        case "$archive" in
+            -)
+                archive_name="$default_archive_name"
+                ;;
+            *)
+                archive_name="${archive}_{utcnow:%Y-%m-%d_%H:%M:%S}"
+                ;;
+        esac
 
         targets=$(zfs get -H -o value -t filesystem de.voidptr.zorgbackup:target "$filesystem" | tr ',' ' ')
         for target in $targets

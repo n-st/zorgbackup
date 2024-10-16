@@ -26,6 +26,17 @@ appended after them), prefix them with a single '-- ':
 
     zfs set de.voidptr.zorgbackup:options="-- --one-file-system --exclude='*/backups/'" tank/userhomes
 
+You can also backup multiple sources into the same repo. In that case, you
+should probably specify unique archive names for each of them (otherwise they
+will be considered part of the same set when pruning old versions, and you
+might lose archives).  
+If you don't specify an archive name (or set it to `-`), the archive name will
+default to `zorgbackup`.  
+Either way, the current UTC date and time will be appended to keep archive
+names unique.
+
+    zfs set de.voidptr.zorgbackup:archive="homes" tank/userhomes
+
 Usage
 -----
 
@@ -44,13 +55,13 @@ Use `-v` if you want to get a one-line message for each filesystem-destination p
 Example
 -------
 
-    $ zfs list -o name,de.voidptr.zorgbackup:repo,de.voidptr.zorgbackup:target,de.voidptr.zorgbackup:options
-    NAME            DE.VOIDPTR.ZORGBACKUP:REPO  DE.VOIDPTR.ZORGBACKUP:TARGET                  DE.VOIDPTR.ZORGBACKUP:OPTIONS
-    tank            -                           borgbackup@moon.example.com:/data/borgrepos/  -
-    tank/bin        bin                         borgbackup@moon.example.com:/data/borgrepos/  -
-    tank/core       core                        borgbackup@moon.example.com:/data/borgrepos/  -
-    tank/extra      -                           borgbackup@moon.example.com:/data/borgrepos/  -
-    tank/userhomes  foo-home                    borgbackup@moon.example.com:/data/borgrepos/  -
+    $ zfs list -o name,de.voidptr.zorgbackup:repo,de.voidptr.zorgbackup:archive,de.voidptr.zorgbackup:target,de.voidptr.zorgbackup:options
+    NAME            DE.VOIDPTR.ZORGBACKUP:REPO  DE.VOIDPTR.ZORGBACKUP:ARCHIVE  DE.VOIDPTR.ZORGBACKUP:TARGET                  DE.VOIDPTR.ZORGBACKUP:OPTIONS
+    tank            -                           -                              borgbackup@moon.example.com:/data/borgrepos/  -
+    tank/bin        bin                         bin                            borgbackup@moon.example.com:/data/borgrepos/  -
+    tank/core       data                        core                           borgbackup@moon.example.com:/data/borgrepos/  -
+    tank/extra      -                           -                              borgbackup@moon.example.com:/data/borgrepos/  -
+    tank/userhomes  data                        homes                          borgbackup@moon.example.com:/data/borgrepos/  -
 
     $ ./zorgbackup.sh -v -v
     Backing up "tank/bin" (at "/mnt/tank/bin") to "borgbackup@moon.example.com:/data/borgrepos/bin"...
